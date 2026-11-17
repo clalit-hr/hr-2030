@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>אסטרטגיית מש״א 2030 | כללית</title>
+<meta name="description" content="הספר הדיגיטלי של אסטרטגיית משאבי אנוש 2030, חטיבת מש״א, כללית">
+<meta name="theme-color" content="#0b132b">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מש״א 2030">
+<meta property="og:type" content="website">
+<meta property="og:title" content="אסטרטגיית מש״א 2030">
+<meta property="og:description" content="הספר הדיגיטלי של חטיבת מש״א, כללית">
+<meta property="og:image" content="https://clalit-hr.github.io/hr-2030/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b132b; --bg2:#101b3a; --panel:rgba(16,27,58,.82); --line:rgba(120,220,230,.16);
+  --ink:#e8f1ff; --dim:#93a4c3; --accent:#3fe0c5; --accent2:#5cc8ff;
+  --vw:100vw; --vh:100vh;
+  --bar:56px;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;
+  font-family:Heebo,"Segoe UI",Arial,sans-serif;-webkit-user-select:none;user-select:none;touch-action:none;overscroll-behavior:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- app shell ---------- */
+#app{position:fixed;inset:0;width:var(--vw);height:var(--vh);display:flex;flex-direction:column;
+  background:
+   radial-gradient(1200px 700px at 85% -10%, rgba(63,224,197,.10), transparent 60%),
+   radial-gradient(900px 600px at 0% 110%, rgba(92,200,255,.10), transparent 60%),
+   var(--bg)}
+#app.rotated{inset:auto;top:0;left:var(--vw);width:var(--vh);height:var(--vw);transform-origin:0 0;transform:rotate(90deg)}
+
+.bar{flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:0 10px;z-index:20;
+  transition:opacity .35s ease, transform .35s ease}
+.top{height:calc(var(--bar) + var(--sat));padding-top:var(--sat);padding-left:calc(10px + var(--sal));padding-right:calc(10px + var(--sar))}
+.bottom{height:calc(var(--bar) + var(--sab));padding-bottom:var(--sab);padding-left:calc(10px + var(--sal));padding-right:calc(10px + var(--sar))}
+.brand{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:10px;padding-inline:6px}
+.brand b{font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand span{color:var(--dim);font-size:13px;white-space:nowrap}
+.ib{width:44px;height:44px;flex:0 0 44px;border-radius:12px;display:grid;place-items:center;color:var(--ink);
+  transition:background .2s, color .2s}
+.ib:hover{background:rgba(255,255,255,.07)}
+.ib.on{color:var(--accent)}
+.ib svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fsbtn{height:40px;border-radius:999px;padding:0 14px;display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;
+  color:#05202a;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(63,224,197,.25);flex:0 0 auto}
+.fsbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sep{flex:1}
+.count{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;color:var(--dim);font-size:14px;direction:ltr}
+.count b{color:var(--ink);font-weight:700}
+.zoomlbl{font-size:12px;font-weight:700;direction:ltr}
+
+/* progress */
+.progress{position:absolute;left:0;right:0;bottom:calc(var(--bar) + var(--sab));height:3px;background:rgba(255,255,255,.06);z-index:21;transition:opacity .35s}
+.progress i{position:absolute;inset:0 0 0 auto;width:0;background:linear-gradient(270deg,var(--accent),var(--accent2));
+  transition:width .5s cubic-bezier(.65,.05,.25,1);border-radius:0 3px 3px 0}
+.progress u{position:absolute;inset:0 0 0 auto;width:0;background:rgba(255,255,255,.35);text-decoration:none}
+
+/* ---------- stage ---------- */
+#viewport{position:relative;flex:1 1 auto;min-height:0;display:grid;place-items:center;overflow:hidden}
+#stage{position:relative;perspective:2600px;transform-style:preserve-3d}
+#zoomer{position:absolute;inset:0;transform-origin:50% 50%;will-change:transform}
+.page{position:absolute;inset:0;border-radius:10px;overflow:hidden;background:#0d1631;
+  box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform}
+.page img{width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
+.page .shade{position:absolute;inset:0;pointer-events:none;opacity:0}
+.page .shade.dark{background:#020611}
+.page .shade.fold{background:linear-gradient(270deg,rgba(0,0,0,.0) 0%,rgba(0,0,0,.25) 55%,rgba(0,0,0,.65) 100%)}
+.page .sheen{position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.18) 48%,transparent 62%)}
+/* right-hand spine */
+.spine{position:absolute;top:0;bottom:0;right:0;width:22px;pointer-events:none;z-index:15;border-radius:0 10px 10px 0;
+  background:linear-gradient(270deg,rgba(0,0,0,.45),rgba(255,255,255,.06) 45%,rgba(0,0,0,0))}
+.backface{position:absolute;inset:0;border-radius:10px;transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:linear-gradient(90deg,#16244d,#0d1631 70%,#0a1229);overflow:hidden}
+.backface img{width:100%;height:100%;opacity:.12;transform:scaleX(-1);filter:blur(1px)}
+.flipper{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:100% 50%;z-index:10;will-change:transform}
+.flipper .page{box-shadow:none}
+
+.edge-hint{position:absolute;top:0;bottom:0;width:22%;z-index:12}
+.edge-hint.l{left:0}.edge-hint.r{right:0}
+
+/* ---------- immersive (landscape phone / fullscreen) ---------- */
+.immersive .bar{position:absolute;left:0;right:0;background:linear-gradient(var(--dir,180deg),rgba(5,10,25,.85),rgba(5,10,25,0))}
+.immersive .top{top:0}
+.immersive .bottom{bottom:0;--dir:0deg}
+.immersive .progress{bottom:0;height:2px}
+.immersive.ui-hidden .top{opacity:0;transform:translateY(-100%);pointer-events:none}
+.immersive.ui-hidden .bottom{opacity:0;transform:translateY(100%);pointer-events:none}
+.immersive.ui-hidden .progress{opacity:.6}
+.immersive .fsbtn span{display:none}
+.immersive .fsbtn{padding:0 11px}
+
+/* ---------- drawer (TOC) ---------- */
+.scrim{position:absolute;inset:0;background:rgba(2,6,17,.6);opacity:0;pointer-events:none;transition:opacity .3s;z-index:40}
+.drawer{position:absolute;top:0;bottom:0;right:0;width:min(380px,88%);z-index:41;background:var(--bg2);
+  border-left:1px solid var(--line);transform:translateX(105%);transition:transform .4s cubic-bezier(.65,.05,.25,1);
+  display:flex;flex-direction:column;padding-top:var(--sat);padding-bottom:var(--sab);padding-right:var(--sar)}
+.toc-open .scrim{opacity:1;pointer-events:auto}
+.toc-open .drawer{transform:none}
+.drawer h2{margin:0;padding:16px 18px 10px;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.toc{overflow:auto;padding:4px 12px 16px;display:flex;flex-direction:column;gap:8px;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.toc button{display:flex;gap:12px;align-items:center;padding:8px;border-radius:12px;text-align:right;min-height:64px;border:1px solid transparent}
+.toc button:hover{background:rgba(255,255,255,.05)}
+.toc button.cur{border-color:var(--accent);background:rgba(63,224,197,.08)}
+.toc img{width:104px;aspect-ratio:16/9;border-radius:6px;flex:0 0 auto;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.toc .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.toc .t small{color:var(--accent);font-weight:700;font-size:12px}
+.toc .t span{font-size:14px;line-height:1.35}
+
+/* ---------- popovers / sheets ---------- */
+.pop{position:absolute;z-index:45;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:8px;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:.2s}
+.pop.show{opacity:1;transform:none;pointer-events:auto}
+#fxPop{top:calc(var(--bar) + var(--sat) - 4px);left:12px;display:flex;flex-direction:column;gap:4px;min-width:200px}
+.immersive #fxPop{top:calc(var(--bar) + 4px)}
+#fxPop .h{font-size:12px;color:var(--dim);padding:6px 10px 2px}
+#fxPop button{display:flex;align-items:center;gap:10px;padding:0 12px;min-height:48px;border-radius:10px;font-size:15px}
+#fxPop button:hover{background:rgba(255,255,255,.05)}
+#fxPop button.cur{color:var(--accent);background:rgba(63,224,197,.08)}
+#fxPop svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.sheet{position:absolute;left:50%;bottom:calc(16px + var(--sab));z-index:50;width:min(420px,calc(100% - 24px));
+  transform:translate(-50%,120%);transition:transform .45s cubic-bezier(.65,.05,.25,1);
+  background:linear-gradient(180deg,#14224a,#0e1834);border:1px solid var(--line);border-radius:22px;padding:20px 20px 16px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.sheet.show{transform:translate(-50%,0)}
+.sheet h3{margin:0 0 6px;font-size:18px}
+.sheet p{margin:0 0 14px;color:var(--dim);font-size:14px;line-height:1.5}
+.sheet ol{margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.sheet li{display:flex;align-items:center;gap:12px;font-size:15px}
+.sheet li i{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;
+  background:rgba(63,224,197,.15);color:var(--accent)}
+.sheet li svg{width:20px;height:20px;stroke:var(--accent2);fill:none;stroke-width:2;vertical-align:-4px;margin-inline:2px}
+.sheet .row{display:flex;gap:8px}
+.btn{flex:1;min-height:48px;border-radius:14px;font-weight:700;font-size:15px}
+.btn.pri{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#05202a}
+.btn.sec{background:rgba(255,255,255,.07)}
+
+.note{position:absolute;left:50%;top:calc(var(--bar) + var(--sat) + 12px);transform:translate(-50%,-8px);z-index:55;opacity:0;
+  background:rgba(16,27,58,.95);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-size:14px;transition:.25s;pointer-events:none}
+.note.show{opacity:1;transform:translate(-50%,0)}
+
+/* intro */
+.intro .page{animation:none}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+@media (max-width:520px){.brand span{display:none}.fsbtn span{display:none}.fsbtn{padding:0 11px}}
+@media (max-width:380px){.brand{display:none}}
+.top .sep{display:none}
+@media (max-width:380px){.top .sep{display:block}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="bar top" id="topBar">
+    <div class="brand"><b>אסטרטגיית מש״א 2030</b><span>חטיבת מש״א, כללית</span></div>
+    <div class="sep"></div>
+    <button class="ib" id="btnToc" aria-label="תוכן עניינים" title="תוכן עניינים"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
+    <button class="ib" id="btnFx" aria-label="אפקט מעבר" title="אפקט מעבר"><svg viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M12 4c-3 0-7 1-9 3v13c2-2 6-3 9-3"/><path d="M12 4c3 0 7 1 9 3v13c-2-2-6-3-9-3"/></svg></button>
+    <button class="ib" id="btnSound" aria-label="צליל דפדוף" title="צליל דפדוף"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7"/><path class="w" d="M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M17 9l5 6M22 9l-5 6" style="display:none"/></svg></button>
+    <button class="ib" id="btnShare" aria-label="שיתוף השקף" title="שיתוף השקף"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.9l7.6-3.8M8.2 13.1l7.6 3.8"/></svg></button>
+    <button class="fsbtn" id="btnFs" aria-label="מסך מלא וסיבוב לרוחב"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="2"/><path d="M8 3h-3a2 2 0 0 0-2 2"/><path d="M16 3h3a2 2 0 0 1 2 2"/></svg><span>מסך מלא</span></button>
+  </header>
+
+  <main id="viewport">
+    <div id="stage">
+      <div id="zoomer"></div>
+      <div class="spine"></div>
+    </div>
+  </main>
+
+  <div class="progress" id="progress"><i id="progFill"></i><u id="playFill"></u></div>
+  <footer class="bar bottom" id="botBar">
+    <button class="ib" id="btnPrev" aria-label="העמוד הקודם" title="העמוד הקודם"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="sep"></div>
+    <button class="ib" id="btnPlay" aria-label="דפדוף אוטומטי" title="דפדוף אוטומטי"><svg viewBox="0 0 24 24"><path class="pl" d="M8 5l11 7-11 7z"/><path class="pa" d="M8 5v14M16 5v14" style="display:none"/></svg></button>
+    <div class="count" id="count"><b>1</b> / 12</div>
+    <button class="ib" id="btnZoom" aria-label="זום" title="זום"><span class="zoomlbl" id="zoomLbl">1x</span></button>
+    <div class="sep"></div>
+    <button class="ib" id="btnNext" aria-label="העמוד הבא" title="העמוד הבא"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+  </footer>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer" aria-label="תוכן עניינים">
+    <h2>תוכן עניינים <button class="ib" id="btnTocClose" aria-label="סגירה"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></h2>
+    <nav class="toc" id="toc"></nav>
+  </aside>
+
+  <div class="pop" id="fxPop" role="menu">
+    <div class="h">אפקט מעבר</div>
+    <button data-fx="flip"><svg viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M12 4c-3 0-7 1-9 3v13c2-2 6-3 9-3"/><path d="M12 4c3 0 7 1 9 3v13c-2-2-6-3-9-3"/></svg>דפדוף ספר</button>
+    <button data-fx="deck"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h10"/></svg>חפיסת קלפים</button>
+    <button data-fx="depth"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="12" height="12" rx="2"/><rect x="9" y="3" width="12" height="12" rx="2"/></svg>עומק וגלישה</button>
+  </div>
+
+  <div class="sheet" id="iosSheet" role="dialog" aria-labelledby="iosT">
+    <h3 id="iosT">מסך מלא באייפון</h3>
+    <p>באייפון, מסך מלא אמיתי נפתח רק מהאייקון במסך הבית. זה לוקח עשר שניות, ופעם אחת בלבד:</p>
+    <ol>
+      <li><i>1</i><span>לחצו על <svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg> שיתוף (או על ⋯ ואז שיתוף)</span></li>
+      <li><i>2</i><span>בחרו "הוספה למסך הבית"</span></li>
+      <li><i>3</i><span>פתחו את הספר מהאייקון החדש</span></li>
+    </ol>
+    <div class="row"><button class="btn pri" id="iosOk">הבנתי</button></div>
+  </div>
+  <div class="note" id="note"></div>
+</div>
+
+<script>
+/*__DATA__*/
+(() => {
+'use strict';
+const N = SLIDES.length;
+const $ = id => document.getElementById(id);
+const app = $('app'), viewport = $('viewport'), stage = $('stage'), zoomer = $('zoomer');
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('hr2030.'+k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('hr2030.'+k, JSON.stringify(v)); }catch(e){} }
+};
+const ua = navigator.userAgent;
+const isIOS = /iPhone|iPod/.test(ua);
+const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = window.navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let cur = 0, busy = false, queued = null;
+let fx = store.get('fx', 'flip');
+let muted = store.get('muted', false);
+let wantLandscape = false, rotated = false;
+let zoom = 1, panX = 0, panY = 0;
+let playing = false, playT0 = 0, playRaf = 0;
+const PLAY_MS = 8000;
+
+/* ---------------- layout ---------------- */
+function fullscreenEl(){ return document.fullscreenElement || document.webkitFullscreenElement; }
+function layout(){
+  const W = window.innerWidth, H = window.innerHeight;
+  document.documentElement.style.setProperty('--vw', W + 'px');
+  document.documentElement.style.setProperty('--vh', H + 'px');
+  rotated = wantLandscape && H > W;
+  app.classList.toggle('rotated', rotated);
+  const lw = rotated ? H : W, lh = rotated ? W : H;   // logical size
+  const landscapePhone = lw > lh && lh < 560;
+  const immersive = rotated || !!fullscreenEl() || landscapePhone || (standalone && lw > lh);
+  app.classList.toggle('immersive', immersive);
+  if (!immersive) showUI(true);
+  const vr = viewport.getBoundingClientRect();
+  let aw = rotated ? vr.height : vr.width, ah = rotated ? vr.width : vr.height;
+  const f = immersive ? 0.98 : 0.94;
+  let w = Math.min(aw * f, ah * f * 16 / 9);
+  if (immersive) w = Math.min(lw * 0.985, lh * 0.97 * 16 / 9);
+  const h = w * 9 / 16;
+  stage.style.width = w + 'px'; stage.style.height = h + 'px';
+  clampPan(); applyZoom(false);
+}
+
+/* ---------------- pages ---------------- */
+function makePage(i){
+  const p = document.createElement('div');
+  p.className = 'page'; p.dataset.i = i;
+  const img = new Image(); img.alt = TITLES[i]; img.decoding = 'async'; img.src = SLIDES[i];
+  const s1 = document.createElement('div'); s1.className = 'shade dark';
+  const s2 = document.createElement('div'); s2.className = 'shade fold';
+  const sh = document.createElement('div'); sh.className = 'sheen';
+  p.append(img, s1, s2, sh);
+  return p;
+}
+const decoded = new Set();
+function preload(i){
+  if (i < 0 || i >= N || decoded.has(i)) return;
+  decoded.add(i);
+  const im = new Image(); im.src = SLIDES[i];
+  if (im.decode) im.decode().catch(()=>{});
+}
+let curPage = null;
+function mount(i){
+  zoomer.innerHTML = '';
+  curPage = makePage(i);
+  zoomer.append(curPage);
+}
+
+/* ---------------- sound ---------------- */
+let actx = null, noiseBuf = null;
+function audio(){
+  if (actx) return actx;
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+  actx = new AC();
+  const len = actx.sampleRate * 0.6;
+  noiseBuf = actx.createBuffer(1, len, actx.sampleRate);
+  const d = noiseBuf.getChannelData(0);
+  let last = 0;
+  for (let k = 0; k < len; k++){ const w = Math.random()*2-1; last = (last + 0.04*w) / 1.04; d[k] = last*3.2 + w*0.25; }
+  return actx;
+}
+function flipSound(){
+  if (muted) return;
+  const c = audio(); if (!c) return;
+  if (c.state === 'suspended') c.resume();
+  const t = c.currentTime;
+  const src = c.createBufferSource(); src.buffer = noiseBuf; src.playbackRate.value = 0.9 + Math.random()*0.2;
+  const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.8;
+  bp.frequency.setValueAtTime(2600, t); bp.frequency.exponentialRampToValueAtTime(700, t + 0.32);
+  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 300;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.22, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.06, t + 0.18);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+  src.connect(bp).connect(hp).connect(g).connect(c.destination);
+  src.start(t); src.stop(t + 0.45);
+  // soft paper "tap" at the end
+  const o = c.createOscillator(), og = c.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(160, t + 0.30); o.frequency.exponentialRampToValueAtTime(70, t + 0.40);
+  og.gain.setValueAtTime(0.0001, t + 0.30); og.gain.exponentialRampToValueAtTime(0.08, t + 0.315); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+  o.connect(og).connect(c.destination); o.start(t + 0.30); o.stop(t + 0.44);
+}
+function renderSound(){
+  const b = $('btnSound');
+  b.querySelectorAll('.w').forEach(e => e.style.display = muted ? 'none' : '');
+  b.querySelector('.x').style.display = muted ? '' : 'none';
+  b.setAttribute('aria-pressed', String(!muted));
+  b.title = muted ? 'הפעלת צליל דפדוף' : 'השתקת צליל דפדוף';
+}
+
+/* ---------------- transitions ---------------- */
+const EASE = 'cubic-bezier(.65,.05,.25,1)';
+function anim(el, kf, dur, easing){ return el.animate(kf, {duration: reduced ? 1 : dur, easing: easing || EASE, fill: 'forwards'}).finished; }
+const q = (p, s) => p.querySelector(s);
+
+const EFFECTS = {
+  async flip(from, to, fwd){
+    const D = 820;
+    const fl = document.createElement('div'); fl.className = 'flipper';
+    const back = document.createElement('div'); back.className = 'backface';
+    if (fwd){
+      zoomer.append(to); zoomer.append(fl);
+      const bi = new Image(); bi.src = SLIDES[+from.dataset.i]; back.append(bi);
+      fl.append(from, back);
+      return Promise.all([
+        anim(fl, [{transform:'rotateY(0deg)',opacity:1},{transform:'rotateY(120deg)',opacity:1,offset:.66},{transform:'rotateY(180deg)',opacity:0}], D),
+        anim(q(from,'.fold'), [{opacity:0},{opacity:.9,offset:.5},{opacity:1}], D),
+        anim(q(from,'.sheen'), [{opacity:0},{opacity:1,offset:.35},{opacity:0,offset:.5}], D),
+        anim(q(to,'.dark'), [{opacity:.55},{opacity:.15,offset:.6},{opacity:0}], D),
+      ]).then(() => fl.remove());
+    } else {
+      zoomer.append(fl);
+      const bi = new Image(); bi.src = SLIDES[+to.dataset.i]; back.append(bi);
+      fl.append(to, back);
+      return Promise.all([
+        anim(fl, [{transform:'rotateY(180deg)',opacity:0},{transform:'rotateY(120deg)',opacity:1,offset:.34},{transform:'rotateY(0deg)',opacity:1}], D),
+        anim(q(to,'.fold'), [{opacity:1},{opacity:.9,offset:.5},{opacity:0}], D),
+        anim(q(from,'.dark'), [{opacity:0},{opacity:.55}], D),
+      ]).then(() => { zoomer.append(to); fl.remove(); from.remove(); });
+    }
+  },
+  async deck(from, to, fwd){
+    const D = 640;
+    if (fwd){
+      zoomer.insertBefore(to, from);
+      return Promise.all([
+        anim(from, [{transform:'translate3d(0,0,0) rotate(0)'},{transform:'translate3d(118%,4%,0) rotate(9deg)'}], D, 'cubic-bezier(.5,0,.3,1)'),
+        anim(to, [{transform:'scale(.93) translateY(2.5%)'},{transform:'none'}], D),
+        anim(q(to,'.dark'), [{opacity:.45},{opacity:0}], D),
+      ]).then(() => from.remove());
+    } else {
+      zoomer.append(to);
+      return Promise.all([
+        anim(to, [{transform:'translate3d(118%,4%,0) rotate(9deg)'},{transform:'none'}], D, 'cubic-bezier(.3,0,.25,1)'),
+        anim(from, [{transform:'none'},{transform:'scale(.93) translateY(2.5%)'}], D),
+        anim(q(from,'.dark'), [{opacity:0},{opacity:.45}], D),
+      ]).then(() => from.remove());
+    }
+  },
+  async depth(from, to, fwd){
+    const D = 700;
+    if (fwd){
+      zoomer.append(to);
+      return Promise.all([
+        anim(from, [{transform:'scale(1)'},{transform:'scale(.86)'}], D),
+        anim(q(from,'.dark'), [{opacity:0},{opacity:.6}], D),
+        anim(to, [{transform:'translate3d(-104%,0,0)'},{transform:'none'}], D, 'cubic-bezier(.2,.7,.2,1)'),
+      ]).then(() => from.remove());
+    } else {
+      zoomer.insertBefore(to, from);
+      return Promise.all([
+        anim(from, [{transform:'none'},{transform:'translate3d(-104%,0,0)'}], D, 'cubic-bezier(.6,0,.4,1)'),
+        anim(to, [{transform:'scale(.86)'},{transform:'scale(1)'}], D),
+        anim(q(to,'.dark'), [{opacity:.6},{opacity:0}], D),
+      ]).then(() => from.remove());
+    }
+  }
+};
+
+async function go(i, opts = {}){
+  if (i < 0 || i >= N) { bump(i < 0 ? -1 : 1); return; }
+  if (i === cur) return;
+  if (busy){ queued = i; return; }
+  busy = true;
+  if (zoom !== 1) setZoom(1, true);
+  const fwd = i > cur;
+  const from = curPage, to = makePage(i);
+  cur = i; updateUI();
+  flipSound();
+  try { await EFFECTS[fx](from, to, fwd); } catch(e){ zoomer.innerHTML=''; zoomer.append(to); }
+  to.getAnimations && to.getAnimations({subtree:true}).forEach(a => a.cancel());
+  zoomer.querySelectorAll('.page').forEach(p => { if (p !== to) p.remove(); });
+  curPage = to;
+  preload(i+1); preload(i-1); preload(i+2);
+  busy = false;
+  if (queued !== null){ const n = queued; queued = null; go(n); }
+  if (playing) playT0 = performance.now();
+}
+const next = () => go(cur + 1), prev = () => go(cur - 1);
+function bump(dir){
+  if (busy || !curPage) return;
+  const x = dir > 0 ? 18 : -18;
+  curPage.animate([{transform:'none'},{transform:`translateX(${x}px)`},{transform:'none'}], {duration: 320, easing: 'ease-out'});
+}
+
+/* ---------------- UI state ---------------- */
+function updateUI(){
+  $('count').innerHTML = `<b>${cur+1}</b> / ${N}`;
+  $('progFill').style.width = ((cur+1)/N*100) + '%';
+  $('btnNext').style.opacity = cur === N-1 ? .35 : 1;
+  $('btnPrev').style.opacity = cur === 0 ? .35 : 1;
+  document.title = (cur ? TITLES[cur] + ' | ' : '') + 'אסטרטגיית מש״א 2030 | כללית';
+  try { history.replaceState(null, '', cur ? '#' + (cur+1) : location.pathname + location.search); } catch(e){}
+  document.querySelectorAll('.toc button').forEach((b, k) => b.classList.toggle('cur', k === cur));
+}
+function buildToc(){
+  const toc = $('toc');
+  TITLES.forEach((t, k) => {
+    const b = document.createElement('button');
+    b.innerHTML = `<img alt="" loading="lazy" src="${THUMBS[k]}"><span class="t"><small>עמוד ${k+1}</small><span></span></span>`;
+    b.querySelector('.t span').textContent = t;
+    b.onclick = () => { closeToc(); setTimeout(() => go(k), 180); };
+    toc.append(b);
+  });
+}
+const openToc = () => { app.classList.add('toc-open'); closePop(); const c = document.querySelector('.toc .cur'); c && c.scrollIntoView({block:'center'}); };
+const closeToc = () => app.classList.remove('toc-open');
+
+function renderFx(){ document.querySelectorAll('#fxPop button').forEach(b => b.classList.toggle('cur', b.dataset.fx === fx)); }
+function togglePop(){ $('fxPop').classList.toggle('show'); }
+function closePop(){ $('fxPop').classList.remove('show'); }
+
+let noteT = 0;
+function note(txt){ const n = $('note'); n.textContent = txt; n.classList.add('show'); clearTimeout(noteT); noteT = setTimeout(() => n.classList.remove('show'), 1800); }
+
+/* auto-hide in immersive mode */
+let hideT = 0;
+function showUI(stay){
+  app.classList.remove('ui-hidden');
+  clearTimeout(hideT);
+  if (!stay && app.classList.contains('immersive')) hideT = setTimeout(() => {
+    if (!app.classList.contains('toc-open') && !$('fxPop').classList.contains('show') && !$('iosSheet').classList.contains('show')) app.classList.add('ui-hidden');
+  }, 2000);
+}
+function toggleUI(){ if (app.classList.contains('ui-hidden')) showUI(); else { clearTimeout(hideT); app.classList.add('ui-hidden'); } }
+
+/* ---------------- zoom & pan ---------------- */
+const LEVELS = [1, 1.75, 2.5];
+function applyZoom(animate){
+  zoomer.style.transition = animate ? 'transform .35s cubic-bezier(.3,.7,.3,1)' : 'none';
+  zoomer.style.transform = `translate3d(${panX}px,${panY}px,0) scale(${zoom})`;
+  $('zoomLbl').textContent = (Math.round(zoom*100)/100) + 'x';
+  $('btnZoom').classList.toggle('on', zoom > 1.01);
+  stage.querySelector('.spine').style.opacity = zoom > 1.01 ? 0 : 1;
+}
+function clampPan(){
+  const w = stage.offsetWidth, h = stage.offsetHeight;
+  const mx = (w * zoom - w) / 2, my = (h * zoom - h) / 2;
+  panX = Math.max(-mx, Math.min(mx, panX)); panY = Math.max(-my, Math.min(my, panY));
+}
+function setZoom(z, animate, cx, cy){
+  z = Math.max(1, Math.min(3, z));
+  if (cx !== undefined){ // keep the point under (cx,cy) (stage-centred logical coords) fixed
+    const k = z / zoom; panX = cx - (cx - panX) * k; panY = cy - (cy - panY) * k;
+  } else if (z === 1){ panX = panY = 0; }
+  else { const k = z / zoom; panX *= k; panY *= k; }
+  zoom = z; clampPan(); applyZoom(animate);
+}
+function cycleZoom(){
+  const i = LEVELS.findIndex(l => Math.abs(l - zoom) < 0.05);
+  setZoom(i < 0 ? 1 : LEVELS[(i + 1) % LEVELS.length], true);
+}
+
+/* ---------------- pointer: swipe / tap / pan / pinch ---------------- */
+function logical(dx, dy){ return rotated ? [dy, -dx] : [dx, dy]; }
+function stageCentre(){ const r = stage.getBoundingClientRect(); return [r.left + r.width/2, r.top + r.height/2]; }
+function toLogicalOffset(x, y){ const [cx, cy] = stageCentre(); return logical(x - cx, y - cy); }
+const pts = new Map();
+let g = null, lastTap = 0, tapT = 0;
+viewport.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  viewport.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (pts.size === 1){
+    g = {x0:e.clientX, y0:e.clientY, t0:performance.now(), px:panX, py:panY, moved:false, pinch:false};
+  } else if (pts.size === 2){
+    const [a, b] = [...pts.values()];
+    g = {pinch:true, d0:Math.hypot(a.x-b.x, a.y-b.y), z0:zoom, px:panX, py:panY,
+         mid: toLogicalOffset((a.x+b.x)/2, (a.y+b.y)/2), moved:true};
+  }
+});
+viewport.addEventListener('pointermove', e => {
+  if (!pts.has(e.pointerId) || !g) return;
+  pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (g.pinch && pts.size >= 2){
+    const [a, b] = [...pts.values()];
+    const z = Math.max(1, Math.min(3, g.z0 * Math.hypot(a.x-b.x, a.y-b.y) / g.d0));
+    const k = z / g.z0;
+    zoom = z; panX = g.mid[0] - (g.mid[0] - g.px) * k; panY = g.mid[1] - (g.mid[1] - g.py) * k;
+    clampPan(); applyZoom(false);
+    return;
+  }
+  const [dx, dy] = logical(e.clientX - g.x0, e.clientY - g.y0);
+  if (Math.hypot(dx, dy) > 8) g.moved = true;
+  if (zoom > 1.01 && g.moved){ panX = g.px + dx; panY = g.py + dy; clampPan(); applyZoom(false); }
+});
+function endPointer(e){
+  if (!pts.has(e.pointerId)) return;
+  pts.delete(e.pointerId);
+  if (!g) return;
+  if (g.pinch){ if (pts.size === 0){ if (zoom < 1.08) setZoom(1, true); g = null; } return; }
+  const [dx, dy] = logical(e.clientX - g.x0, e.clientY - g.y0);
+  const dt = performance.now() - g.t0;
+  if (zoom <= 1.01 && g.moved && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 900){
+    dx > 0 ? next() : prev();          // RTL: drag the page to the right = next
+    showUI();
+  } else if (!g.moved && dt < 350){
+    const now = performance.now();
+    if (now - lastTap < 300){            // double tap = zoom toggle at point
+      clearTimeout(tapT); lastTap = 0;
+      const [ox, oy] = toLogicalOffset(e.clientX, e.clientY);
+      zoom > 1.01 ? setZoom(1, true) : setZoom(2.5, true, ox, oy);
+    } else {
+      lastTap = now;
+      const cx = e.clientX, cy = e.clientY;
+      tapT = setTimeout(() => singleTap(cx, cy), 260);
+    }
+  }
+  g = null;
+}
+viewport.addEventListener('pointerup', endPointer);
+viewport.addEventListener('pointercancel', endPointer);
+function singleTap(x, y){
+  if (app.classList.contains('immersive') && zoom <= 1.01){
+    const [ox] = toLogicalOffset(x, y);
+    const w = stage.offsetWidth;
+    if (ox < -w * 0.32) { next(); return; }   // left edge = forward (RTL)
+    if (ox > w * 0.32) { prev(); return; }
+    toggleUI();
+  } else showUI();
+}
+viewport.addEventListener('wheel', e => {
+  if (e.ctrlKey){ e.preventDefault(); const [ox, oy] = toLogicalOffset(e.clientX, e.clientY); setZoom(zoom * (e.deltaY < 0 ? 1.12 : 0.89), false, ox, oy); return; }
+  if (zoom > 1.01){ e.preventDefault(); panX -= e.deltaX; panY -= e.deltaY; clampPan(); applyZoom(false); return; }
+  if (Math.abs(e.deltaY) > 30 || Math.abs(e.deltaX) > 30){
+    if (wheelLock) return; wheelLock = true; setTimeout(() => wheelLock = false, 650);
+    (e.deltaY > 0 || e.deltaX < 0) ? next() : prev();
+  }
+}, {passive:false});
+let wheelLock = false;
+['gesturestart','gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
+
+/* ---------------- keyboard ---------------- */
+document.addEventListener('keydown', e => {
+  if (e.altKey || e.metaKey || e.ctrlKey) return;
+  const k = e.key;
+  if (['ArrowLeft','PageDown',' ','Enter'].includes(k)){ e.preventDefault(); next(); }
+  else if (['ArrowRight','PageUp','Backspace'].includes(k)){ e.preventDefault(); prev(); }
+  else if (k === 'Home') go(0);
+  else if (k === 'End') go(N-1);
+  else if (k === 'Escape'){ closeToc(); closePop(); hideSheet(); if (zoom > 1) setZoom(1, true); }
+  else if (k === 'f' || k === 'F') toggleLandscape();
+  else if (k === 'z' || k === 'Z') cycleZoom();
+  else if (k === 'p' || k === 'P') togglePlay();
+  else if (k === 'm' || k === 'M') toggleMute();
+  else if (/^[1-9]$/.test(k)) go(+k - 1);
+  else if (k === '0') go(9);
+  showUI();
+});
+
+/* ---------------- fullscreen + landscape ---------------- */
+async function enterFs(){
+  const el = document.documentElement;
+  try {
+    if (el.requestFullscreen) await el.requestFullscreen({navigationUI:'hide'});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  } catch(e){}
+}
+async function exitFs(){
+  try { if (document.exitFullscreen && document.fullscreenElement) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen && document.webkitFullscreenElement) document.webkitExitFullscreen(); } catch(e){}
+}
+async function toggleLandscape(){
+  audio();
+  if (!wantLandscape){
+    wantLandscape = true;
+    layout(); showUI();
+    const canFs = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+    const within = (p, ms) => Promise.race([p, new Promise(r => setTimeout(r, ms))]);
+    if (!standalone && canFs) await within(enterFs(), 700);
+    try { if (screen.orientation && screen.orientation.lock) await within(screen.orientation.lock('landscape').catch(()=>{}), 700); } catch(e){}
+    layout(); setTimeout(layout, 300);
+    if (isIOS && !standalone && !fullscreenEl()) setTimeout(showSheet, 450);
+  } else {
+    wantLandscape = false;
+    try { screen.orientation && screen.orientation.unlock && screen.orientation.unlock(); } catch(e){}
+    await exitFs();
+    layout();
+  }
+  $('btnFs').classList.toggle('on', wantLandscape);
+  $('btnFs').querySelector('span').textContent = wantLandscape ? 'יציאה' : 'מסך מלא';
+}
+['fullscreenchange','webkitfullscreenchange'].forEach(t => document.addEventListener(t, () => {
+  if (!fullscreenEl() && wantLandscape && !(isIOS && !standalone)){
+    wantLandscape = false;
+    $('btnFs').classList.remove('on'); $('btnFs').querySelector('span').textContent = 'מסך מלא';
+  }
+  setTimeout(layout, 60);
+}));
+
+function showSheet(){ $('iosSheet').classList.add('show'); showUI(true); }
+function hideSheet(){ $('iosSheet').classList.remove('show'); showUI(); }
+
+/* ---------------- share ---------------- */
+async function share(){
+  const url = location.origin + location.pathname + (cur ? '#' + (cur+1) : '');
+  const data = {title: 'אסטרטגיית מש״א 2030', text: TITLES[cur], url};
+  try {
+    if (navigator.share){ await navigator.share(data); return; }
+  } catch(e){ if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(url); note('הקישור לעמוד הועתק'); }
+  catch(e){ prompt('הקישור לעמוד:', url); }
+}
+
+/* ---------------- autoplay ---------------- */
+function togglePlay(){
+  playing = !playing;
+  const b = $('btnPlay');
+  b.classList.toggle('on', playing);
+  b.querySelector('.pl').style.display = playing ? 'none' : '';
+  b.querySelector('.pa').style.display = playing ? '' : 'none';
+  b.title = playing ? 'עצירת הדפדוף האוטומטי' : 'דפדוף אוטומטי';
+  cancelAnimationFrame(playRaf);
+  if (playing){
+    if (cur === N-1) go(0);
+    playT0 = performance.now();
+    const tick = now => {
+      if (!playing) return;
+      const p = Math.min(1, (now - playT0) / PLAY_MS);
+      $('playFill').style.width = (p * (1/N) * 100 + cur/N*100) + '%';
+      if (p >= 1 && !busy){ if (cur >= N-1) { togglePlay(); return; } next(); playT0 = now; }
+      playRaf = requestAnimationFrame(tick);
+    };
+    playRaf = requestAnimationFrame(tick);
+    showUI();
+  } else $('playFill').style.width = 0;
+}
+function toggleMute(){ muted = !muted; store.set('muted', muted); renderSound(); if (!muted){ flipSound(); } }
+
+/* ---------------- wiring ---------------- */
+$('btnNext').onclick = () => { next(); showUI(); };
+$('btnPrev').onclick = () => { prev(); showUI(); };
+$('btnToc').onclick = openToc; $('btnTocClose').onclick = closeToc; $('scrim').onclick = closeToc;
+$('btnFx').onclick = e => { e.stopPropagation(); togglePop(); showUI(true); };
+document.querySelectorAll('#fxPop button').forEach(b => b.onclick = () => {
+  fx = b.dataset.fx; store.set('fx', fx); renderFx(); closePop(); showUI();
+  note(b.textContent.trim());
+});
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#fxPop,#btnFx')) closePop(); }, true);
+$('btnSound').onclick = toggleMute;
+$('btnShare').onclick = share;
+$('btnFs').onclick = toggleLandscape;
+$('btnZoom').onclick = () => { cycleZoom(); showUI(); };
+$('btnPlay').onclick = togglePlay;
+$('iosOk').onclick = hideSheet;
+['topBar','botBar'].forEach(id => $(id).addEventListener('pointerdown', () => showUI()));
+window.addEventListener('resize', () => requestAnimationFrame(layout));
+window.addEventListener('orientationchange', () => setTimeout(layout, 120));
+window.addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1), 10); if (n >= 1 && n <= N && n-1 !== cur) go(n-1); });
+
+/* ---------------- start ---------------- */
+const h0 = parseInt(location.hash.slice(1), 10);
+cur = (h0 >= 1 && h0 <= N) ? h0 - 1 : 0;
+buildToc(); renderFx(); renderSound();
+mount(cur); updateUI(); layout();
+preload(cur+1); preload(cur-1);
+// opening: the cover swings open from the spine
+if (!reduced){
+  curPage.animate([
+    {transform:'perspective(2600px) rotateY(-28deg) scale(.9)', opacity:0, transformOrigin:'100% 50%'},
+    {transform:'perspective(2600px) rotateY(0) scale(1)', opacity:1, transformOrigin:'100% 50%'}
+  ], {duration: 1000, easing: 'cubic-bezier(.2,.75,.2,1)'});
+  q(curPage,'.sheen').animate([{opacity:0, transform:'translateX(60%)'},{opacity:1, offset:.4},{opacity:0, transform:'translateX(-60%)'}], {duration: 1400, delay: 500, easing: 'ease-in-out'});
+}
+if (standalone) app.classList.add('standalone');
+showUI();
+})();
+</script>
+</body>
+</html>
