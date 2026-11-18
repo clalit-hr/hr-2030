@@ -16,6 +16,8 @@ PDF = next(ROOT.glob("*.pdf"))
 SCALE = 2.6        # 2496x1404, sharp at 2.5x zoom on retina screens
 QUALITY = 82
 THUMB_W = 360
+import os
+SCRATCH = pathlib.Path(os.environ["BOOK_SCRATCH"]) if os.environ.get("BOOK_SCRATCH") else None
 
 TITLES = [
     "אסטרטגיית מש״א 2030",
@@ -39,6 +41,71 @@ def webp_uri(im, quality):
     return "data:image/webp;base64," + base64.b64encode(b.getvalue()).decode(), len(b.getvalue())
 
 
+# Slide 11 build-up: pieces revealed one after another (x0, y0, x1, y1 as fractions)
+BUILD_INDEX = 10
+BUILD = [
+    ((.515, .025, .86, .205), "rise", 0),
+    ((.145, .025, .485, .205), "rise", 250),
+    ((.30, .205, .70, .30), "wipeDown", 700),
+    ((.275, .305, .71, .43), "rise", 1050),
+    ((.515, .435, .68, .527), "pop", 1450),
+    ((.275, .435, .482, .527), "pop", 1600),
+    ((.515, .527, .70, .627), "pop", 1750),
+    ((.24, .527, .482, .627), "pop", 1900),
+    ((.486, .43, .514, .66), "wipeDown", 2150),
+    ((.70, .335, .86, .68), "wipeUp", 2500),
+    ((.14, .335, .29, .68), "wipeUp", 2500),
+    ((.17, .665, .84, .755), "rise", 2950),
+    ((.486, .75, .514, .868), "wipeDown", 3400),
+    ((.12, .87, .88, .99), "glow", 3700),
+]
+
+
+def build_layers(im):
+    import numpy as np
+    import cv2
+    W, H = im.size
+    a = np.asarray(im).astype(np.float32)
+    mask = np.zeros((H, W), np.float32)
+    layers = []
+    for (x0, y0, x1, y1), fx, at in BUILD:
+        X0, Y0, X1, Y1 = round(x0 * W), round(y0 * H), round(x1 * W), round(y1 * H)
+        mask[Y0:Y1, X0:X1] = 1
+        crop = im.crop((X0, Y0, X1, Y1)).convert("RGBA")
+        f = max(4, W // 250)
+        al = Image.new("L", crop.size, 0)
+        al.paste(255, (f, f, crop.width - f, crop.height - f))
+        if x0 == .14:  # left arc: keep clear of the pill next to it
+            cut = round((.235 - x0) * W)
+            al.paste(0, (cut, round((.43 - y0) * H), crop.width, crop.height))
+        al = al.filter(ImageFilter.GaussianBlur(f / 2))
+        crop.putalpha(al)
+        b = io.BytesIO()
+        crop.save(b, "WEBP", quality=QUALITY, method=6)
+        layers.append({"u": "data:image/webp;base64," + base64.b64encode(b.getvalue()).decode(),
+                       "r": [x0, y0, x1 - x0, y1 - y0], "fx": fx, "at": at})
+    # clean background plate: fill masked areas from their surroundings
+    mask = cv2.dilate(mask, np.ones((W // 90, W // 90), np.uint8))
+    sm = 4
+    small = cv2.resize(a, (W // sm, H // sm), interpolation=cv2.INTER_AREA)
+    ms = cv2.resize(mask, (W // sm, H // sm), interpolation=cv2.INTER_AREA)
+    keep = (1 - ms)[..., None]
+    k = (0, 0)
+    num = cv2.GaussianBlur(small * keep, k, 30)
+    den = cv2.GaussianBlur(keep, k, 30)
+    if den.ndim == 2:
+        den = den[..., None]
+    fill = num / np.maximum(den, 1e-3)
+    fill = cv2.resize(fill, (W, H), interpolation=cv2.INTER_CUBIC)
+    mf = cv2.GaussianBlur(mask, (0, 0), 6)[..., None]
+    plate = a * (1 - mf) + fill * mf
+    pim = Image.fromarray(np.clip(plate, 0, 255).astype("uint8"))
+    b = io.BytesIO()
+    pim.save(b, "WEBP", quality=75, method=6)
+    return {"index": BUILD_INDEX, "plate": "data:image/webp;base64," + base64.b64encode(b.getvalue()).decode(),
+            "layers": layers}, pim
+
+
 def main():
     doc = pdfium.PdfDocument(str(PDF))
     assert len(doc) == len(TITLES), f"PDF has {len(doc)} pages, TITLES has {len(TITLES)}"
@@ -53,6 +120,8 @@ def main():
         thumbs.append(webp_uri(th, 70)[0])
         if i == 0:
             cover = im
+        if i == BUILD_INDEX:
+            build, plate = build_layers(im)
 
     # Share preview (WhatsApp / social) 1200x630
     og = Image.new("RGB", (1200, 630), (11, 19, 43))
@@ -83,10 +152,13 @@ def main():
 
     tpl = (ROOT / "src" / "template.html").read_text(encoding="utf-8")
     data = "const SLIDES=" + json.dumps(slides) + ";\nconst THUMBS=" + json.dumps(thumbs) + \
+        ";\nconst BUILD=" + json.dumps(build) + \
         ";\nconst TITLES=" + json.dumps(TITLES, ensure_ascii=False) + ";"
     out = tpl.replace("/*__DATA__*/", data)
     (ROOT / "index.html").write_text(out, encoding="utf-8")
     size = (ROOT / "index.html").stat().st_size
+    if SCRATCH:
+        plate.save(SCRATCH / "plate.jpg", quality=80)
     print(f"slides raw {raw // 1024} KB, index.html {size / 1024 / 1024:.2f} MB")
     assert size < 4 * 1024 * 1024, "index.html over 4MB"
 
