@@ -303,7 +303,7 @@ const BFX = {
   wipeUp:   [{opacity:1, clipPath:'inset(100% 0 0 0)'}, {opacity:1, clipPath:'inset(0 0 0 0)'}],
   glow:     [{opacity:0, transform:'scale(.9)', filter:'brightness(1.8)'}, {opacity:1, transform:'scale(1.02)', filter:'brightness(1.4)', offset:.6}, {opacity:1, transform:'none', filter:'none'}],
 };
-const BDUR = {rise:600, pop:520, wipeDown:520, wipeUp:760, glow:1000};
+const BDUR = {rise:900, pop:700, wipeDown:800, wipeUp:1100, glow:1400};
 function playBuild(p){
   if (!p || !p.classList.contains('build') || p.dataset.played) return;
   p.dataset.played = '1';
@@ -313,6 +313,7 @@ function playBuild(p){
     lays[k].animate(BFX[L.fx], {duration: BDUR[L.fx], delay: L.at, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'both'});
     end = Math.max(end, L.at + BDUR[L.fx]);
   });
+  p.dataset.end = performance.now() + end + 700;
   const full = p.querySelector('img:not(.plate):not(.lay)');
   full.animate([{opacity:0},{opacity:1}], {duration: 500, delay: end + 200, fill: 'forwards'});
 }
@@ -347,18 +348,20 @@ function flipSound(){
   if (muted) return;
   const c = audio(); if (!c) return;
   if (c.state === 'suspended') c.resume();
-  // soft paper "swish": brown noise, low-pass sweep, slow attack, long tail
+  // very soft, low "breath" of air: brown noise through a gentle low-pass
   const t = c.currentTime;
-  const src = c.createBufferSource(); src.buffer = noiseBuf; src.playbackRate.value = 0.75 + Math.random()*0.1;
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
-  lp.frequency.setValueAtTime(1500, t); lp.frequency.exponentialRampToValueAtTime(380, t + 0.55);
-  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 140;
+  const src = c.createBufferSource(); src.buffer = noiseBuf; src.playbackRate.value = 0.55;
+  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.2;
+  lp.frequency.setValueAtTime(700, t); lp.frequency.exponentialRampToValueAtTime(220, t + 0.7);
+  const lp2 = c.createBiquadFilter(); lp2.type = 'lowpass'; lp2.frequency.value = 900; lp2.Q.value = 0.1;
+  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 90;
   const g = c.createGain();
   g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.09, t + 0.14);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
-  src.connect(lp).connect(hp).connect(g).connect(c.destination);
-  src.start(t); src.stop(t + 0.62);
+  g.gain.linearRampToValueAtTime(0.045, t + 0.22);
+  g.gain.linearRampToValueAtTime(0.025, t + 0.4);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+  src.connect(lp).connect(lp2).connect(hp).connect(g).connect(c.destination);
+  src.start(t); src.stop(t + 0.82);
 }
 function renderSound(){
   const b = $('btnSound');
@@ -591,7 +594,10 @@ function endPointer(e){
 }
 viewport.addEventListener('pointerup', endPointer);
 viewport.addEventListener('pointercancel', endPointer);
+function buildRunning(){ return curPage && curPage.dataset.end && performance.now() < +curPage.dataset.end; }
+function finishBuild(){ curPage.getAnimations({subtree:true}).forEach(a => a.finish()); curPage.dataset.end = 0; }
 function singleTap(x, y){
+  if (buildRunning()){ finishBuild(); showUI(); return; }
   if (app.classList.contains('immersive') && zoom <= 1.01){
     const [ox] = toLogicalOffset(x, y);
     const w = stage.offsetWidth;
@@ -697,7 +703,8 @@ function togglePlay(){
     playT0 = performance.now();
     const tick = now => {
       if (!playing) return;
-      const p = Math.min(1, (now - playT0) / PLAY_MS);
+      if (buildRunning()) playT0 = Math.max(playT0, +curPage.dataset.end - PLAY_MS * 0.4);
+      const p = Math.max(0, Math.min(1, (now - playT0) / PLAY_MS));
       $('playFill').style.width = (p * (1/N) * 100 + cur/N*100) + '%';
       if (p >= 1 && !busy){ if (cur >= N-1) { togglePlay(); return; } next(); playT0 = now; }
       playRaf = requestAnimationFrame(tick);
