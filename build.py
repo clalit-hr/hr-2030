@@ -53,8 +53,8 @@ BUILD = [
     ((.515, .527, .70, .627), "pop", 8200),
     ((.24, .527, .482, .627), "pop", 9100),
     ((.486, .43, .514, .66), "wipeDown", 10200),
-    ((.70, .335, .86, .68), "wipeUp", 10900),
-    ((.14, .335, .29, .68), "wipeUp", 10900),
+    ((.69, .335, .86, .68), "wipeUp", 10900),
+    ((.14, .335, .30, .68), "wipeUp", 10900),
     ((.17, .665, .84, .755), "rise", 12000),
     ((.486, .75, .514, .868), "wipeDown", 14200),
     ((.12, .87, .88, .99), "glow", 15000),
@@ -67,9 +67,22 @@ def build_layers(im):
     W, H = im.size
     a = np.asarray(im).astype(np.float32)
     mask = np.zeros((H, W), np.float32)
+    px = lambda r: (round(r[0] * W), round(r[1] * H), round(r[2] * W), round(r[3] * H))
+    # The two curved arrows: exact pixel masks, so the arrowheads (which reach into the
+    # "excellent results" box) belong only to the arrow layers and appear with them.
+    arrows = np.zeros((H, W), np.float32)
+    white = (a.min(axis=2) > 200).astype(np.uint8)
+    for r, fx, _ in BUILD:
+        if fx != "wipeUp":
+            continue
+        X0, Y0, X1, Y1 = px(r)
+        n_, lab, st, _ = cv2.connectedComponentsWithStats(white[Y0:Y1, X0:X1], connectivity=8)
+        big = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+        arrows[Y0:Y1, X0:X1] = np.maximum(arrows[Y0:Y1, X0:X1], (lab == big).astype(np.float32))
+    arrows = cv2.GaussianBlur(cv2.dilate(arrows, np.ones((5, 5), np.uint8)), (0, 0), 1)
     layers = []
     for (x0, y0, x1, y1), fx, at in BUILD:
-        X0, Y0, X1, Y1 = round(x0 * W), round(y0 * H), round(x1 * W), round(y1 * H)
+        X0, Y0, X1, Y1 = px((x0, y0, x1, y1))
         mask[Y0:Y1, X0:X1] = 1
         crop = im.crop((X0, Y0, X1, Y1)).convert("RGBA")
         f = max(4, W // 250)
@@ -79,7 +92,24 @@ def build_layers(im):
             cut = round((.235 - x0) * W)
             al.paste(0, (cut, round((.43 - y0) * H), crop.width, crop.height))
         al = al.filter(ImageFilter.GaussianBlur(f / 2))
-        crop.putalpha(al)
+        A = np.asarray(al).astype(np.float32) / 255
+        arr = arrows[Y0:Y1, X0:X1]
+        if fx == "wipeUp":
+            # outside the arrow, stay out of the boxes this crop overlaps; the arrow itself is whole
+            over = np.zeros_like(A)
+            for r2, fx2, _ in BUILD:
+                if fx2 == "wipeUp":
+                    continue
+                a0, b0, a1, b1 = px(r2)
+                over[max(b0, Y0) - Y0:max(min(b1, Y1) - Y0, 0), max(a0, X0) - X0:max(min(a1, X1) - X0, 0)] = 1
+            over = cv2.GaussianBlur(over, (0, 0), f / 2)
+            A = np.maximum(A * (1 - over), arr)
+        elif arr.max() > 0:
+            # paint the arrow tip out of this box with the box's own colour
+            hole = cv2.dilate((arr > 0.01).astype(np.uint8), np.ones((3, 3), np.uint8))
+            rgb = cv2.inpaint(np.asarray(crop.convert("RGB")), hole, 5, cv2.INPAINT_TELEA)
+            crop = Image.fromarray(rgb).convert("RGBA")
+        crop.putalpha(Image.fromarray(np.clip(A * 255, 0, 255).astype("uint8")))
         b = io.BytesIO()
         crop.save(b, "WEBP", quality=QUALITY, method=6)
         layers.append({"u": "data:image/webp;base64," + base64.b64encode(b.getvalue()).decode(),
